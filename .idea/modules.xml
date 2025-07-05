@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/fs_quandm35.iml" filepath="$PROJECT_DIR$/.idea/fs_quandm35.iml" />
-      <module fileurl="file://$PROJECT_DIR$/quandm35_JPL.L.A201/quandm35_JPL.L.A201.iml" filepath="$PROJECT_DIR$/quandm35_JPL.L.A201/quandm35_JPL.L.A201.iml" />
     </modules>
   </component>
 </project>
