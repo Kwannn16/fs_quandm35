@@ -3,15 +3,16 @@ package fa.training.entities;
 import java.io.Serializable;
 
 public abstract class Airplane implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     protected String id;
     protected String model;
     protected double cruiseSpeed;
     protected double emptyWeight;
     protected double maxTakeoffWeight;
-    protected final String flyMethod;
+    protected String flyMethod;
 
     public Airplane() {
-        this.flyMethod = "";
     }
 
     public Airplane(String id, String model, double cruiseSpeed, double emptyWeight, double maxTakeoffWeight,
@@ -68,10 +69,13 @@ public abstract class Airplane implements Serializable {
         return flyMethod;
     }
 
+    public void setFlyMethod(String flyMethod) {
+        this.flyMethod = flyMethod;
+    }
+
     @Override
     public String toString() {
-        return String.format(
-                "Airplane [id=%s, model=%s, cruiseSpeed=%.2f, emptyWeight=%.2f, maxTakeoffWeight=%.2f, flyMethod=%s]",
-                id, model, cruiseSpeed, emptyWeight, maxTakeoffWeight, flyMethod);
+        return "Airplane [id=" + id + ", model=" + model + ", cruiseSpeed=" + cruiseSpeed + ", emptyWeight="
+                + emptyWeight + ", maxTakeoffWeight=" + maxTakeoffWeight + ", flyMethod=" + flyMethod + "]";
     }
 }
