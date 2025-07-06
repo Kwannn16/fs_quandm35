@@ -1,11 +1,12 @@
 package fa.training.entities;
 
 public class Fixedwing extends Airplane {
+    private static final long serialVersionUID = 1L;
+
     private String planeType;
     private double minNeededRunwaySize;
 
     public Fixedwing() {
-        super();
     }
 
     public Fixedwing(String id, String model, double cruiseSpeed, double emptyWeight,
@@ -33,7 +34,15 @@ public class Fixedwing extends Airplane {
 
     @Override
     public String toString() {
-        return super.toString() + String.format(" | Fixedwing [planeType=%s, minNeededRunwaySize=%.2f]",
-                planeType, minNeededRunwaySize);
+        return "Fixedwing{" +
+                "id='" + getId() + '\'' +
+                ", model='" + getModel() + '\'' +
+                ", cruiseSpeed=" + getCruiseSpeed() +
+                ", emptyWeight=" + getEmptyWeight() +
+                ", maxTakeoffWeight=" + getMaxTakeoffWeight() +
+                ", planeType='" + planeType + '\'' +
+                ", minNeededRunwaySize=" + minNeededRunwaySize +
+                ", flyMethod='" + getFlyMethod() + '\'' +
+                '}';
     }
 }
