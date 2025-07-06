@@ -1,82 +1,105 @@
+// Gói dịch vụ để quản lý trực thăng (Helicopter)
 package fa.training.services;
 
-import fa.training.entities.Airport;
 import fa.training.entities.Helicopter;
 import fa.training.utils.Validator;
 
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HelicopterService {
-    // Danh sách các máy bay trực thăng (Helicopter)
+    // Tên file lưu dữ liệu trực thăng
+    private static final String HELICOPTER_FILE = "helicopters.txt";
+
+    // Danh sách trực thăng đang được quản lý trong hệ thống
     private List<Helicopter> helicopters;
 
-    // Constructor để khởi tạo HelicopterService với danh sách helicopters
-    public HelicopterService(List<Helicopter> helicopters) {
-        this.helicopters = helicopters;
+    // Constructor: khởi tạo danh sách và load dữ liệu từ file
+    public HelicopterService() {
+        this.helicopters = new ArrayList<>();
+        loadHelicopters(); // Đọc dữ liệu từ file khi khởi tạo
     }
 
-    // Hiển thị tất cả các trực thăng cùng với thông tin sân bay đang đậu
-    public void displayAll(List<Airport> airportList) {
-        for (Helicopter h : helicopters) {
-            String airportName = findParkingAirportName(h.getId(), airportList);
-            System.out.println(h.toString() + " | Parked at: " + airportName);
+    // Thêm trực thăng mới vào danh sách
+    public boolean addHelicopter(Helicopter helicopter) {
+        // Kiểm tra dữ liệu hợp lệ
+        if (!Validator.isValidHelicopter(helicopter)) {
+            return false;
         }
+
+        // Kiểm tra ID đã tồn tại chưa
+        for (Helicopter existing : helicopters) {
+            if (existing.getId().equals(helicopter.getId())) {
+                return false;
+            }
+        }
+
+        // Thêm vào danh sách và lưu lại
+        helicopters.add(helicopter);
+        saveHelicopters();
+        return true;
     }
 
-    // Tìm một trực thăng theo ID
+    // Tìm trực thăng theo ID
     public Helicopter findById(String id) {
-        for (Helicopter h : helicopters) {
-            if (h.getId().equals(id)) {
-                return h;
+        for (Helicopter helicopter : helicopters) {
+            if (helicopter.getId().equals(id)) {
+                return helicopter;
             }
         }
         return null;
     }
 
-    // Thêm trực thăng vào sân bay nếu hợp lệ
-    public void addHelicopterToAirport(Helicopter h, Airport airport, List<Airport> airportList) {
-        // Kiểm tra nếu trọng lượng tối đa vượt quá 1.5 lần trọng lượng rỗng
-        if (!Validator.isValidHelicopterWeight(h.getEmptyWeight(), h.getMaxTakeoffWeight())) {
-            System.out.println("Invalid helicopter: maxTakeoffWeight exceeds 1.5 × emptyWeight.");
-            return;
-        }
-
-        // Kiểm tra xem trực thăng đã được đậu ở sân bay khác chưa
-        for (Airport ap : airportList) {
-            if (ap.getHelicopterIDs().contains(h.getId())) {
-                System.out.println("Helicopter is already parked at another airport.");
-                return;
-            }
-        }
-
-        // Kiểm tra chỗ đậu tại sân bay hiện tại có còn không
-        if (airport.getHelicopterIDs().size() >= airport.getMaxHelicopterParkingPlace()) {
-            System.out.println("No parking slot available for helicopter at this airport.");
-            return;
-        }
-
-        // Thêm ID của trực thăng vào danh sách sân bay
-        airport.getHelicopterIDs().add(h.getId());
-        System.out.println("Helicopter " + h.getId() + " added to airport " + airport.getId());
+    // Lấy toàn bộ danh sách trực thăng
+    public List<Helicopter> getAllHelicopters() {
+        return new ArrayList<>(helicopters);
     }
 
-    // Xoá trực thăng khỏi sân bay
-    public void removeHelicopterFromAirport(String helicopterId, Airport airport) {
-        // Nếu trực thăng không có trong danh sách thì thông báo lỗi
-        if (!airport.getHelicopterIDs().remove(helicopterId)) {
-            System.out.println("Helicopter " + helicopterId + " is not parked at airport " + airport.getId());
-        } else {
-            System.out.println("Helicopter " + helicopterId + " removed from airport " + airport.getId());
+    // Xoá trực thăng khỏi danh sách theo ID
+    public boolean deleteHelicopter(String id) {
+        Helicopter helicopter = findById(id);
+        if (helicopter != null) {
+            helicopters.remove(helicopter);
+            saveHelicopters();
+            return true;
+        }
+        return false;
+    }
+
+    // Đọc dữ liệu trực thăng từ file helicopters.txt
+    private void loadHelicopters() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(HELICOPTER_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length >= 6) {
+                    Helicopter helicopter = new Helicopter(
+                            parts[0], parts[1],                         // ID, Model
+                            Double.parseDouble(parts[2]),               // Cruise speed
+                            Double.parseDouble(parts[3]),               // Empty weight
+                            Double.parseDouble(parts[4]),               // Max takeoff weight
+                            Double.parseDouble(parts[5])                // Range
+                    );
+                    helicopters.add(helicopter);
+                }
+            }
+        } catch (IOException e) {
+            // Nếu file chưa tồn tại thì không có vấn đề
         }
     }
 
-    // Tìm tên và ID sân bay nơi trực thăng đang đậu (nếu có)
-    private String findParkingAirportName(String helicopterId, List<Airport> airportList) {
-        for (Airport ap : airportList) {
-            if (ap.getHelicopterIDs().contains(helicopterId)) {
-                return ap.getName() + " (" + ap.getId() + ")";
+    // Lưu danh sách trực thăng ra file helicopters.txt
+    private void saveHelicopters() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(HELICOPTER_FILE))) {
+            for (Helicopter helicopter : helicopters) {
+                writer.println(helicopter.getId() + "," + helicopter.getModel() + "," +
+                        helicopter.getCruiseSpeed() + "," + helicopter.getEmptyWeight() + "," +
+                        helicopter.getMaxTakeoffWeight() + "," + helicopter.getRange());
             }
+        } catch (IOException e) {
+            // In stacktrace nếu có lỗi khi lưu file
+            e.printStackTrace();
         }
-        return "Not assigned"; // Chưa đậu ở sân bay nào
     }
 }
