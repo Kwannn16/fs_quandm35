@@ -5,25 +5,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Airport implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String id;
     private String name;
     private double runwaySize;
-    private int maxFixedwingParkingPlace;
-    private int maxHelicopterParkingPlace;
-    private List<String> fixedwingIDs = new ArrayList<>();
-    private List<String> helicopterIDs = new ArrayList<>();
+    private int maxFixedWingParkingPlace;
+    private List<String> fixedWingAirplaneIds;
+    private int maxRotatedWingParkingPlace;
+    private List<String> helicopterIds;
 
     public Airport() {
+        this.fixedWingAirplaneIds = new ArrayList<>();
+        this.helicopterIds = new ArrayList<>();
     }
 
-    public Airport(String id, String name, double runwaySize, int maxFW, int maxRW) {
+    public Airport(String id, String name, double runwaySize, int maxFixedWingParkingPlace,
+                   int maxRotatedWingParkingPlace) {
         this.id = id;
         this.name = name;
         this.runwaySize = runwaySize;
-        this.maxFixedwingParkingPlace = maxFW;
-        this.maxHelicopterParkingPlace = maxRW;
-        this.fixedwingIDs = new ArrayList<>();
-        this.helicopterIDs = new ArrayList<>();
+        this.maxFixedWingParkingPlace = maxFixedWingParkingPlace;
+        this.maxRotatedWingParkingPlace = maxRotatedWingParkingPlace;
+        this.fixedWingAirplaneIds = new ArrayList<>();
+        this.helicopterIds = new ArrayList<>();
     }
 
     public String getId() {
@@ -50,43 +55,72 @@ public class Airport implements Serializable {
         this.runwaySize = runwaySize;
     }
 
-    public int getMaxFixedwingParkingPlace() {
-        return maxFixedwingParkingPlace;
+    public int getMaxFixedWingParkingPlace() {
+        return maxFixedWingParkingPlace;
     }
 
-    public void setMaxFixedwingParkingPlace(int maxFixedwingParkingPlace) {
-        this.maxFixedwingParkingPlace = maxFixedwingParkingPlace;
+    public void setMaxFixedWingParkingPlace(int maxFixedWingParkingPlace) {
+        this.maxFixedWingParkingPlace = maxFixedWingParkingPlace;
     }
 
-    public int getMaxHelicopterParkingPlace() {
-        return maxHelicopterParkingPlace;
+    public List<String> getFixedWingAirplaneIds() {
+        return fixedWingAirplaneIds;
     }
 
-    public void setMaxHelicopterParkingPlace(int maxHelicopterParkingPlace) {
-        this.maxHelicopterParkingPlace = maxHelicopterParkingPlace;
+    public void setFixedWingAirplaneIds(List<String> fixedWingAirplaneIds) {
+        this.fixedWingAirplaneIds = fixedWingAirplaneIds;
     }
 
-    public List<String> getFixedwingIDs() {
-        return fixedwingIDs;
+    public int getMaxRotatedWingParkingPlace() {
+        return maxRotatedWingParkingPlace;
     }
 
-    public void setFixedwingIDs(List<String> fixedwingIDs) {
-        this.fixedwingIDs = fixedwingIDs;
+    public void setMaxRotatedWingParkingPlace(int maxRotatedWingParkingPlace) {
+        this.maxRotatedWingParkingPlace = maxRotatedWingParkingPlace;
     }
 
-    public List<String> getHelicopterIDs() {
-        return helicopterIDs;
+    public List<String> getHelicopterIds() {
+        return helicopterIds;
     }
 
-    public void setHelicopterIDs(List<String> helicopterIDs) {
-        this.helicopterIDs = helicopterIDs;
+    public void setHelicopterIds(List<String> helicopterIds) {
+        this.helicopterIds = helicopterIds;
+    }
+
+    public boolean addFixedWingAirplane(String airplaneId) {
+        if (fixedWingAirplaneIds.size() < maxFixedWingParkingPlace && !fixedWingAirplaneIds.contains(airplaneId)) {
+            fixedWingAirplaneIds.add(airplaneId);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeFixedWingAirplane(String airplaneId) {
+        return fixedWingAirplaneIds.remove(airplaneId);
+    }
+
+    public boolean addHelicopter(String helicopterId) {
+        if (helicopterIds.size() < maxRotatedWingParkingPlace && !helicopterIds.contains(helicopterId)) {
+            helicopterIds.add(helicopterId);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeHelicopter(String helicopterId) {
+        return helicopterIds.remove(helicopterId);
     }
 
     @Override
     public String toString() {
-        return "Airport [id=" + id + ", name=" + name + ", runwaySize=" + runwaySize + ", maxFixedwingParkingPlace="
-                + maxFixedwingParkingPlace + ", maxHelicopterParkingPlace=" + maxHelicopterParkingPlace
-                + ", fixedwingIDs=" + fixedwingIDs + ", helicopterIDs=" + helicopterIDs + "]";
+        return "Airport{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", runwaySize=" + runwaySize +
+                ", maxFixedWingParkingPlace=" + maxFixedWingParkingPlace +
+                ", fixedWingAirplaneIds=" + fixedWingAirplaneIds +
+                ", maxRotatedWingParkingPlace=" + maxRotatedWingParkingPlace +
+                ", helicopterIds=" + helicopterIds +
+                '}';
     }
-
 }
